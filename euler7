@@ -1,0 +1,28 @@
+"""
+By listing the first six prime numbers: 2, 3, 5, 7, 11, and 13, we can see that the 6th prime is 13.
+
+What is the 10 001st prime number?
+"""
+
+from math import floor, sqrt
+
+#defines a function which establishes whether prime or not
+def is_prime(num):
+    if num < 2:
+    	return False
+    
+    for a in range(2, floor(sqrt(num)) + 1):
+        if num % a == 0:
+            return False
+        
+    return True
+
+prime_count = 0
+a = 1
+
+while prime_count != 10001:
+	a += 1
+	if is_prime(a):
+		prime_count += 1
+
+print(a)
