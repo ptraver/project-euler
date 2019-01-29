@@ -1,0 +1,24 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Jan 29 13:38:35 2019
+
+@author: 33743
+"""
+
+"""
+2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
+
+What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?
+"""
+
+match = False
+numerator = 20
+
+while match == False:
+    passed = False
+    while passed == False:
+        for denominator in range(2, 21):
+            if numerator % denominator != 0:
+                break
+        passed = True
+    numerator += 1
