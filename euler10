@@ -1,0 +1,33 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jan 30 09:34:59 2019
+
+@author: 33743
+"""
+
+"""
+The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
+
+Find the sum of all the primes below two million.
+"""
+
+from math import floor, sqrt
+
+#defines a function which establishes whether prime or not
+def is_prime(num):
+    if num < 2:
+    	return False
+    
+    for a in range(2, floor(sqrt(num)) + 1):
+        if num % a == 0:
+            return False
+        
+    return True
+
+primes = []
+
+for a in range(2000000):
+    if is_prime(a):
+        primes.append(a)
+        
+print(sum(primes))
