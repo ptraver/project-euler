@@ -1,0 +1,35 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jan 31 11:34:46 2019
+
+@author: 33743
+"""
+
+"""
+Starting in the top left corner of a 2×2 grid, and only being able to move to the right and down, there are exactly 6 routes to the bottom right corner.
+
+
+How many such routes are there through a 20×20 grid?
+"""
+
+routes_list = [[1, 2]]
+grid_total = 6
+rows = 2
+
+while rows < 20:
+    
+    new_row_list = []
+    
+    for a in range(rows):
+        new_row_list.append(sum(routes_list[rows - 2][:a + 1]))
+        
+    new_row_list.append(grid_total)
+    
+    print(new_row_list)
+    
+    routes_list.append(new_row_list)    
+    grid_total = sum(new_row_list) * 2      #this can be done more easily by finding (second last term in new_row_list * 2)
+    rows += 1
+
+    
+print(grid_total)
