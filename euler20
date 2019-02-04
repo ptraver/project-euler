@@ -1,0 +1,19 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Feb  4 09:12:44 2019
+
+@author: 33743
+"""
+
+factorial = 1
+digits_sum = 0
+
+
+for a in range(2, 101):
+    factorial *= a
+
+  
+for b in str(factorial):
+    digits_sum += int(b)
+    
+print(digits_sum)
