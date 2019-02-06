@@ -13,27 +13,27 @@ A permutation is an ordered arrangement of objects. For example, 3124 is one pos
 What is the millionth lexicographic permutation of the digits 0, 1, 2, 3, 4, 5, 6, 7, 8 and 9?
 """
 
-
-#   This code is not correct for all cases, but gives the correct answer here
-#   For example remainder set to 725759, 725760 and 725761 reveal problems
-#   Or set it to 1000000, 1000001, and 1000002
-
-import math          
+import math, sys          
    
-remainder = 1000000
+remainder = 100
 print(remainder)
 digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 answer = []
         
-for i in range(max(digits), -1, -1):
+for i in range(max(digits), 0, -1):
     denominator = math.factorial(i)
-    quotient = math.floor(remainder / denominator)
-    if (remainder / denominator) == math.floor(remainder / denominator):
-        answer.append(digits.pop(1))
+    
+    if remainder < denominator:
+        answer.append(digits.pop(0))
+    elif remainder % denominator == 0:
+
+        answer.append(digits.pop(int(remainder / denominator) - 1))
         for a in range(1, int(len(digits)) + 1):
             answer.append(digits[-a])
-        break
-    answer.append(digits.pop(quotient))
-    remainder -= quotient * math.factorial(i)
-    
-print(answer)
+        remainder = 0   # not sure why, but this has to be put in to stop a pop() IndexError being thrown at the very end of output
+        print(answer)
+        sys.exit
+    else:
+        quotient = math.floor(remainder / denominator)
+        answer.append(digits.pop(quotient))
+        remainder -= quotient * math.factorial(i)
