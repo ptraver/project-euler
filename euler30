@@ -1,0 +1,35 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Feb  7 12:39:45 2019
+
+@author: 33743
+"""
+
+"""
+Surprisingly there are only three numbers that can be written as the sum of fourth powers of their digits:
+
+1634 = 1**4 + 6**4 + 3**4 + 4**4
+8208 = 8**4 + 2**4 + 0**4 + 8**4
+9474 = 9**4 + 4**4 + 7**4 + 4**4
+As 1 = 1**4 is not a sum it is not included.
+
+The sum of these numbers is 1634 + 8208 + 9474 = 19316.
+
+Find the sum of all the numbers that can be written as the sum of fifth powers of their digits.
+"""
+
+# Once you've gotten to seven digit numbers, summing another 9**5 won't get you far enough to catch up with the sum of digits
+
+answer_list = []
+
+for a in range(10):
+    for b in range(10):
+        for c in range(10):
+            for d in range(10):
+                for e in range(10):
+                    for f in range(10):
+                        num = int(str(a) + str(b) + str(c) + str(d) + str(e) + str(f))
+                        if a ** 5 + b ** 5 + c ** 5 + d ** 5 + e ** 5 + f ** 5 == num:
+                            answer_list.append(num)
+                            
+print(sum(answer_list) - 1) # minus 1 becuase 1 itself is not counted as it is not a sum
