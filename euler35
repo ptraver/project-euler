@@ -1,0 +1,45 @@
+
+
+"""
+The number, 197, is called a circular prime because all rotations of the digits: 197, 971, and 719, are themselves prime.
+
+There are thirteen such primes below 100: 2, 3, 5, 7, 11, 13, 17, 31, 37, 71, 73, 79, and 97.
+
+How many circular primes are there below one million?
+"""
+
+import math
+
+def isprime(n):
+    if n < 2:
+        return False
+    else:
+        for a in range(2, int(math.floor(math.sqrt(n))) + 1):
+            if n % a == 0:
+                return False
+            
+    return True
+
+
+counter = 0
+
+
+for i in range(2, 1000000):
+	if isprime(i):
+
+		st = str(i)
+
+		duplic = st * 2
+		len_str = len(st)
+
+		passes = True
+
+		for j in range(len_str):
+			if not isprime(int(duplic[ j : len_str + j ])):
+				passes = False
+				break
+
+		if passes == True:
+			counter += 1
+
+print(counter)
