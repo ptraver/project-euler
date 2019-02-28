@@ -1,0 +1,42 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Feb 26 11:39:16 2019
+
+@author: 33743
+"""
+
+# This script finds the number of ways of rewriting 1 pound using any number of coins, and builds the answer for 2 pounds out of that
+# Script takes a few hours to run
+# This approach will not work in the general case - won't work for finding ways of arranging 5p out of coins below, for instance
+
+import itertools
+
+coins = [1, 2, 5, 10, 20, 50, 100]
+total = 0
+max_coins = max(coins)
+
+combs_lst = []
+
+# Finds all the ways of rewriting 1 pound, adding each combination to combs_lst
+for i in range(1, max_coins + 1):
+    for a in itertools.combinations_with_replacement(coins, i):
+        if sum(a) == max_coins:
+            combs_lst.append(a)
+            total += 1
+            
+ans_lst = []
+
+# Finds all combinations from within combs_lst having unique sets of elements. Adds each such combination to ans_lst 
+for a in range(0, len(combs_lst)):
+    for b in range(a, len(combs_lst)):
+        
+        contender1 = list(combs_lst[a])
+        contender2 = list(combs_lst[b])
+        contender_lst = sorted(contender1 + contender2)
+        
+        if contender_lst not in ans_lst:
+            ans_lst.append(contender_lst)
+           
+            
+print(len(ans_lst) + 1) # the plus one accounts for the 2 pound coin itself
+
