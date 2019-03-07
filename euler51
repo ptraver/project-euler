@@ -1,0 +1,60 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Mar  6 14:29:02 2019
+
+@author: 33743
+"""
+
+"""
+
+By replacing the 1st digit of the 2-digit number *3, it turns out that six of the nine possible values: 13, 23, 43, 53, 73, and 83, are all prime.
+
+By replacing the 3rd and 4th digits of 56**3 with the same digit, this 5-digit number is the first example having seven primes among the ten generated numbers, yielding the family: 56003, 56113, 56333, 56443, 56663, 56773, and 56993. Consequently 56003, being the first member of this family, is the smallest prime with this property.
+
+Find the smallest prime which, by replacing part of the number (not necessarily adjacent digits) with the same digit, is part of an eight prime value family.
+
+"""  
+
+
+# Takes an integer and returns a set containing tuples denoting the indexes of each distinct digit within that integer
+def indices_list(n):
+    
+    n_lst = list(str(n))
+    indices_set = set([])
+    
+    for a in n_lst:
+        # Adds tuple of all occurreneces of digit a within n_lst to indices_set
+        indices_set.add(tuple(sorted([i for i, x in enumerate(n_lst) if x == a])))
+   
+    return(indices_set)
+
+
+
+def main():    
+    
+    from euler27 import isprime
+
+    # Will use larger and larger arbitrary range() until an answer is found
+    primes = [x for x in range(1, 500000) if isprime(x)]
+
+    for prime in primes:
+    
+        for i in indices_list(prime):
+            count = 1   # This is 1 rather than 0 to allow for 'prime' itself
+            lst = list(str(prime))
+            for j in range(10):
+                if j == 0 and 0 in i:
+                    continue
+                else:
+                    for indx in i:
+                        lst[indx] = str(j)
+                    if int(''.join(lst)) != prime and isprime(int(''.join(lst))):
+                        count += 1
+            if count == 8:
+                print(prime, i, count)
+                exit()
+          
+      
+
+if __name__ == "__main__":
+    main()
