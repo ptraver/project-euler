@@ -1,0 +1,28 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Mar  7 11:19:15 2019
+
+@author: 33743
+"""
+
+"""
+
+It can be seen that the number, 125874, and its double, 251748, contain exactly the same digits, but in a different order.
+
+Find the smallest positive integer, x, such that 2x, 3x, 4x, 5x, and 6x, contain the same digits.
+
+"""
+
+i = 1
+found = False
+
+while found == False:
+    found = True
+    for j in range(2, 7):
+        if sorted(str(i * j)) != sorted(str(i)):
+            found = False
+            i += 1
+            break
+        
+print(i)
+    
