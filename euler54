@@ -1,0 +1,204 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Mar  7 12:13:57 2019
+
+@author: 33743
+"""
+
+"""
+
+In the card game poker, a hand consists of five cards and are ranked, from lowest to highest, in the following way:
+
+High Card: Highest value card.
+One Pair: Two cards of the same value.
+Two Pairs: Two different pairs.
+Three of a Kind: Three cards of the same value.
+Straight: All cards are consecutive values.
+Flush: All cards of the same suit.
+Full House: Three of a kind and a pair.
+Four of a Kind: Four cards of the same value.
+Straight Flush: All cards are consecutive values of same suit.
+Royal Flush: Ten, Jack, Queen, King, Ace, in same suit.
+The cards are valued in the order:
+2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King, Ace.
+
+If two players have the same ranked hands then the rank made up of the highest value wins; for example, a pair of eights beats a pair of fives (see example 1 below). But if two ranks tie, for example, both players have a pair of queens, then highest cards in each hand are compared (see example 4 below); if the highest cards tie then the next highest cards are compared, and so on.
+
+Consider the following five hands dealt to two players:
+
+Hand	 	Player 1	 	Player 2	 	Winner
+1	 	5H 5C 6S 7S KD
+Pair of Fives
+ 	2C 3S 8S 8D TD
+Pair of Eights
+ 	Player 2
+2	 	5D 8C 9S JS AC
+Highest card Ace
+ 	2C 5C 7D 8S QH
+Highest card Queen
+ 	Player 1
+3	 	2D 9C AS AH AC
+Three Aces
+ 	3D 6D 7D TD QD
+Flush with Diamonds
+ 	Player 2
+4	 	4D 6S 9H QH QC
+Pair of Queens
+Highest card Nine
+ 	3D 6D 7H QD QS
+Pair of Queens
+Highest card Seven
+ 	Player 1
+5	 	2H 2D 4C 4D 4S
+Full House
+With Three Fours
+ 	3C 3D 3S 9S 9D
+Full House
+with Three Threes
+ 	Player 1
+The file, poker.txt, contains one-thousand random hands dealt to two players. Each line of the file contains ten cards (separated by a single space): the first five are Player 1's cards and the last five are Player 2's cards. You can assume that all hands are valid (no invalid characters or repeated cards), each player's hand is in no specific order, and in each hand there is a clear winner.
+
+How many hands does Player 1 win?
+
+"""
+
+# Maybe could make a class for hand score, rather than putting it in a list
+
+
+
+# Takes a list of length 5 as a poker hand and returns its score as a tuple
+def hand_score(hand):
+    
+    hand_score = []
+
+    # cards_dct associates cards with values. Necessary becuase of picture cards.
+    cards_dct = {'1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 'T': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14}
+    
+    scores_dct = {'straight flush': 8, 'four of a kind': 7, 'full house': 6, 'flush': 5, 'straight': 4, 'three of a kind': 3, 'two pairs': 2, 'pair': 1, 'high card': 0}
+        
+    # Card_reps associates each card_num with its number of occurrences in the hand
+    card_reps = {}
+    for card in hand:
+        if cards_dct[card[0]] in card_reps.keys():
+            card_reps[cards_dct[card[0]]] += 1
+        else:
+            card_reps[cards_dct[card[0]]] = 1
+        
+    flush = False
+    if hand[0][1] == hand[1][1] == hand[2][1] == hand[3][1] == hand[4][1]:
+        flush = True
+     
+    card_vals = []
+    for card in hand:
+        card_vals.append(cards_dct[card[0]])
+        
+        
+    sorted_card_vals = sorted(card_vals)
+    straight = True
+    for a in range(1, 5):
+        if sorted_card_vals[a] != sorted_card_vals[a - 1] + 1:
+            straight = False
+            
+    
+    if flush == True and straight == True:
+        hand_score.append(scores_dct['straight flush']) # Straight flush
+        hand_score.append(max(card_vals)) # High card value
+    elif 4 in card_reps.values():
+        hand_score.append(scores_dct['four of a kind'])
+        hand_score.append(max(card_reps, key=card_reps.get)) # Value of the quadruple
+        #hand_score.append(min(card_reps, key=card_reps.get)) # Value of single remaining card - unnecessary
+    elif 3 in card_reps.values() and 2 in card_reps.values():
+        hand_score.append(scores_dct['full house'])
+        hand_score.append(max(card_reps, key=card_reps.get)) # Value of the triple
+        #hand_score.append(min(card_reps, key=card_reps.get)) # Value of the remaining pair - unnecessary
+    elif flush == True:
+        hand_score.append(scores_dct['flush'])
+        for a in sorted(card_vals, reverse=True):
+            hand_score.append(a)
+    elif straight == True:
+        hand_score.append(scores_dct['straight'])
+        hand_score.append(max(card_vals))
+    elif 3 in card_reps.values():
+        hand_score.append(scores_dct['three of a kind'])
+        hand_score.append(max(card_reps, key=card_reps.get)) # Value of the triple
+        temp = list(filter(lambda a: a != hand_score[1], card_vals))
+        for a in sorted(temp, reverse=True):
+            hand_score.append(a)
+    elif list(card_reps.values()).count(2) == 2:
+        hand_score.append(scores_dct['two pairs'])
+        temp = []
+        for key in card_reps:
+            if card_reps[key] == 2: temp.append(key)
+        for a in sorted(temp, reverse=True):
+            hand_score.append(a)
+        hand_score.append(min(card_reps, key=card_reps.get))
+    elif 2 in card_reps.values():
+        hand_score.append(scores_dct['pair'])
+        hand_score.append(max(card_reps, key=card_reps.get))
+        temp = []
+        for key in card_reps:
+            if card_reps[key] == 1: temp.append(key)
+        for a in sorted(temp, reverse=True):
+            hand_score.append(a)
+    else:
+        hand_score.append(scores_dct['high card'])
+        for a in sorted(card_vals, reverse=True):
+            hand_score.append(a)
+               
+    return(hand_score)
+    
+
+def main():
+    
+    player_1_win_count = 0
+    
+    f = open('euler54.txt', 'r')
+    
+    for line in f:
+        hand1 = line[:14].split()
+        hand2 = line[15:].split()
+    
+        if hand_score(hand1) > hand_score(hand2):
+            player_1_win_count += 1
+            
+    f.close()
+    
+    print(player_1_win_count)
+        
+    
+if __name__ == "__main__":
+    main()
+
+
+
+"""
+
+    # Testing
+    # Straight flush
+    print(hand_score(['TH', 'JH', 'QH', 'KH', 'AH']) > hand_score(['9H', 'TH', 'JH', 'QH', 'KH']))
+    print(hand_score(['TH', 'JH', 'QH', 'KH', 'AH']) > hand_score(['9H', '9D', '9S', '9C', '8H']))
+    # Four of a kind
+    print(hand_score(['9H', '9D', '9S', '9C', '8H']) > hand_score(['8H', '8D', '8S', '8C', '7H']))
+    print(hand_score(['9H', '9D', '9S', '9C', '8H']) > hand_score(['8H', '8D', '8S', '7C', '7H']))
+    # Full house
+    print(hand_score(['9H', '9D', '9S', '8C', '8H']) > hand_score(['8S', '8D', '7S', '7C', '7H']))
+    print(hand_score(['9H', '9D', '9S', '8C', '8H']) > hand_score(['AS', 'TS', '7S', '2S', '3S']))
+    # Flush
+    print(hand_score(['AS', 'TS', '7S', '2S', '3S']) > hand_score(['KS', 'JS', '8S', '4S', '5S']))
+    print(hand_score(['AS', 'TS', '7S', '2S', '3S']) > hand_score(['KS', 'JS', 'QS', 'TS', '9C']))
+    # Straight
+    print(hand_score(['AS', 'TS', 'JH', 'QC', 'KD']) > hand_score(['KS', 'JS', 'QS', 'TS', '9C']))
+    print(hand_score(['AS', 'TS', 'JH', 'QC', 'KD']) > hand_score(['KS', 'KH', 'KC', '2S', '3S']))
+    # Three of a kind
+    print(hand_score(['AS', 'AD', 'AH', 'QC', 'KD']) > hand_score(['KS', 'KH', 'KC', '2S', '3S']))
+    print(hand_score(['AS', 'AD', 'AH', 'QC', 'KD']) > hand_score(['KS', 'KH', 'JC', 'JS', '3S']))
+    # Two pairs
+    print(hand_score(['KC', 'KD', 'QH', 'QC', '3D']) > hand_score(['KS', 'KH', 'JC', 'JS', '3S']))
+    print(hand_score(['KC', 'KD', 'QH', 'QC', '3D']) > hand_score(['KS', 'KH', 'JC', 'TS', '3S']))
+    # Pair
+    print(hand_score(['AC', 'AD', '4H', 'QC', '3D']) > hand_score(['KS', 'KH', 'JC', 'TS', '3S']))
+    print(hand_score(['AC', 'AD', '4H', 'QC', '3D']) > hand_score(['KS', '7H', 'JC', 'TS', '3S']))
+    # High card
+    print(hand_score(['AC', 'TD', '4H', 'QC', '3D']) > hand_score(['KS', '7H', 'JC', 'TS', '3S']))
+
+"""
