@@ -1,0 +1,98 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Mar 29 13:47:32 2019
+
+@author: 33743
+"""
+
+
+"""
+It is possible to show that the square root of two can be expressed as an infinite continued fraction.
+
+√ 2 = 1 + 1/(2 + 1/(2 + 1/(2 + ... ))) = 1.414213...
+
+By expanding this for the first four iterations, we get:
+
+1 + 1/2 = 3/2 = 1.5
+1 + 1/(2 + 1/2) = 7/5 = 1.4
+1 + 1/(2 + 1/(2 + 1/2)) = 17/12 = 1.41666...
+1 + 1/(2 + 1/(2 + 1/(2 + 1/2))) = 41/29 = 1.41379...
+
+The next three expansions are 99/70, 239/169, and 577/408, but the eighth expansion, 1393/985, is the first example where the number of digits in the numerator exceeds the number of digits in the denominator.
+
+In the first one-thousand expansions, how many fractions contain a numerator with more digits than denominator?
+"""
+
+longer_numerator_count = 0
+
+a, b = 3, 2
+
+for i in range(1000):
+    
+    if len(str(a)) > len(str(b)):
+        longer_numerator_count += 1
+
+    holder = b
+    b = a + b
+    a = holder + b
+    
+print(longer_numerator_count)
+
+
+
+
+
+
+
+#Some junk down here, but junk that might come in handy later
+
+
+"""
+from sys import setrecursionlimit
+from fractions import Fraction
+
+from decimal import *
+getcontext().prec = 1000000
+
+no_of_recursions = 0
+greater_numerator_count = 0
+
+# Need this to get around recursion depth error at run time
+setrecursionlimit(1500)
+
+
+def hack(prev_numerator, prev_denominator, no_of_recursions, greater_numerator_count):
+    
+    if no_of_recursions >= 50:
+        return greater_numerator_count
+    
+    no_of_recursions += 1
+    
+    hack(current_numerator, current_denominator)
+    
+
+hack(0, 0)
+
+
+
+#takes number of recursion cases and gives back the square root of 2 answer
+def recurs(n, no_of_recursions, greater_numerator_count):
+    
+    if no_of_recursions >= 50:
+        return greater_numerator_count
+    
+    no_of_recursions += 1
+    
+    numerator_denominator_list = str(Fraction.from_float(float(1 + n)).limit_denominator(50 ** no_of_recursions)).split('/')
+    
+    print(numerator_denominator_list[0], numerator_denominator_list[1]) #n, Fraction.from_float(float(1 + n)).limit_denominator(1000000)
+    
+    if len(numerator_denominator_list[0]) > len(numerator_denominator_list[1]):
+        greater_numerator_count += 1
+    
+    return recurs(Decimal(1) / Decimal(2 + n), no_of_recursions, greater_numerator_count)
+
+
+print(recurs(Decimal(0.4), no_of_recursions, greater_numerator_count))
+
+"""
