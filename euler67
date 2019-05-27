@@ -1,0 +1,55 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu May 23 14:10:20 2019
+
+@author: 33743
+"""
+
+"""
+
+By starting at the top of the triangle below and moving to adjacent numbers on the row below, the maximum total from top to bottom is 23.
+
+3
+7 4
+2 4 6
+8 5 9 3
+
+That is, 3 + 7 + 4 + 9 = 23.
+
+Find the maximum total from top to bottom in triangle.txt (right click and 'Save Link/Target As...'), a 15K text file containing a triangle with one-hundred rows.
+
+NOTE: This is a much more difficult version of Problem 18. It is not possible to try every route to solve this problem, as there are 299 altogether! If you could check one trillion (1012) routes every second it would take over twenty billion years to check them all. There is an efficient algorithm to solve it. ;o)
+
+"""
+
+triangle = []
+
+f = open('euler67.txt', 'r')
+for line in f:
+	triangle.append(line.split())
+
+f.close()
+
+len_triangle = len(triangle)
+holder_row = triangle[-1]
+
+for row in range(-2, -len_triangle - 1, -1):
+    
+    len_row = len(triangle[row])
+    temp_holder_row = []
+    
+    for num in range(len_row):
+        if int(holder_row[num]) > int(holder_row[num + 1]):
+            temp_holder_row.append(int(triangle[row][num]) + int(holder_row[num])) #should have made everything int earlier??
+        else:
+            temp_holder_row.append(int(triangle[row][num]) + int(holder_row[num + 1]))
+            
+    holder_row = temp_holder_row
+    
+    #still must fix this part, but the logic is correct
+print(holder_row)
+        
+        
+
+        
+        
