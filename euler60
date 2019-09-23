@@ -1,0 +1,179 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Apr 16 15:26:26 2019
+
+@author: 33743
+"""
+
+"""
+
+The primes 3, 7, 109, and  673, are quite remarkable. By taking any two primes and concatenating them in any order the result will always be prime. For example, taking 7 and 109, both 7109 and 1097 are prime. The sum of these four primes, 792, represents the lowest sum for a set of four primes with this property.
+
+Find the lowest sum for a set of five primes for which any two primes concatenate to produce another prime.
+
+"""
+
+from euler27 import isprime
+trie_max = 100000000
+upper_limit = 110000
+threshold = 5
+break_point = upper_limit
+
+class TrieNode(object):
+    """
+    Our trie node implementation. Very basic. but does the job
+    """
+    
+    def __init__(self, digit: str):
+        self.digit = digit
+        self.children = []
+        # Is it the last digit of the prime.
+        self.prime_finished = False
+    
+def add(root, prime: str):
+    """
+    Adding a prime in the trie structure
+    """
+    node = root
+    for digit in prime:
+        found_in_child = False
+        # Search for the digit in the children of the present `node`
+        for child in node.children:
+            if child.digit == digit:
+                # Point the node to the child that contains this digit
+                node = child
+                found_in_child = True
+                break
+        # We did not find it so add a new chlid
+        if not found_in_child:
+            new_node = TrieNode(digit)
+            node.children.append(new_node)
+            # And then point node to the new child
+            node = new_node
+    # Everything finished. Mark it as the end of a word.
+    node.prime_finished = True
+
+def IsPrime(root, num: str) -> bool:
+    """
+    Checks if a number appears within the trie
+    """
+    
+    node = root
+    # If the root node has no children, then return False.
+    # Because it means we are trying to search in an empty trie
+    if not root.children:
+        return False
+    for digit in num:
+        digit_not_found = True
+        # Search through all the children of the present `node`
+        for child in node.children:
+            if child.digit == digit:
+                # We found the digit existing in the child.
+                digit_not_found = False
+                # Assign node as the child containing the digit and break
+                node = child
+                break
+        if digit_not_found:
+            return False
+        
+    #Having gotten to here, return true if this combination of digits marks the end of a prime number
+    return node.prime_finished
+
+# Returns True if number n is worth adding to list lst - checks if it makes primes when combined with any number is lst in any order
+def worth_adding(n, lst):
+    
+    for a in lst:
+        tpl = str(n) + str(a), str(a) + str(n)
+        for b in tpl:
+            if int(b) < trie_max and not IsPrime(root, b): # Is there a way here of starting the search off at a more efficient place - close to where you'd expect the prime to be
+                return False
+            elif int(b) >= trie_max and not isprime(int(b)):
+                return False
+    return True
+
+root = TrieNode('0')
+primes_list = []
+
+for a in range(2, trie_max):
+    if isprime(a):
+        add(root, str(a))
+        
+print('trie completed')
+
+primes_list = [a for a in range(2, upper_limit) if IsPrime(root, str(a))]
+primes_list.remove(2)   # 2 and 5 will be no good
+primes_list.remove(5)
+
+print('primes list completed')
+
+
+# Big list containing all viable primes combinations
+primes_combination_list = []
+
+# Dictionary containing all possible list answers and the sum of each list
+ans_dict = {}
+
+first_clear = False
+second_clear = False
+third_clear = False
+
+for prime in primes_list:
+    print(prime)
+    if prime >= break_point:
+        break
+    
+    # List which tracks the indices in primes_combination_list to delete
+    indexes = set([])
+    
+    # List of lists which must be added to primes_combination_list at the end of the loop. The first digit is the length of the combination
+    if prime < upper_limit / threshold:
+        to_extend = [[1, prime]]
+    else:
+        to_extend = []
+    
+    for i in range(len(primes_combination_list)):   
+        
+        if first_clear == False and prime >= upper_limit / (threshold - 1):
+            first_clear = True
+            if primes_combination_list[i][0] == 1:
+                indexes.add(i)
+        elif second_clear == False and prime >= upper_limit / (threshold - 2):
+            second_clear = True
+            if primes_combination_list[i][0] <= 2:
+                indexes.add(i)
+        elif third_clear == False and prime >= upper_limit / (threshold - 3):
+            third_clear = True
+            if primes_combination_list[i][0] <= 3:
+                indexes.add(i)
+                
+        
+        if worth_adding(prime, primes_combination_list[i][1:]):
+            # Need to extend the combination about to edit, because possibly it might be relevant for other combinations in future
+            to_extend.append(primes_combination_list[i][:])
+            # Add the prime to the list that it's worth adding to
+            primes_combination_list[i].append(prime)
+            # Increment the length of this primes list
+            primes_combination_list[i][0] += 1
+            
+            
+            # If this primes list meets the threshold we're looking for
+            if primes_combination_list[i][0] == threshold:
+                indexes.add(i) # delete this here as no point in hanging onto it
+                list_proper = primes_combination_list[i][1:]
+                print(list_proper)
+                sum_list_proper = sum(list_proper)
+                if sum_list_proper < break_point:
+                    break_point = sum_list_proper
+                ans_dict[tuple(list_proper)] = sum_list_proper      
+                
+                
+    # Delete these lists that are going to be useless going forward
+    for index in sorted(indexes, reverse=True):
+        del primes_combination_list[index]
+     
+    primes_combination_list.extend(to_extend)
+
+print(min(ans_dict, key=ans_dict.get))
+
+
+    
