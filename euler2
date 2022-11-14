@@ -18,6 +18,7 @@ fibonacci = [ 1, 2 ]
 while fibonacci[-1] <= 4000000:
     fibonacci.append(fibonacci[-1] + fibonacci[-2])
 
+# the last number added to fibonacci will be the first to exceed 4 million. It must be removed.
 fibonacci.pop()
     
 print(sum(a for a in fibonacci if a % 2 == 0))
